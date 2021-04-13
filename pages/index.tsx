@@ -46,7 +46,7 @@ const IndexPage = () => {
           </div>
           <div className="lg:w-3/5 md:w-1/2 w-full text-center md:text-left mt-6 md:mt-0 md:pl-4">
             <DisplayStreakMessage streak={latestStreak} loading={loading} pendingUsernameEntry={username === ''} unknownUser={unknownUser} />
-            {articles && <DisplayArticleInfo articles={articles} />}
+            {articles && articles.length > 0 && <DisplayArticleInfo articles={articles} />}
           </div>
         </div>
       </div>
