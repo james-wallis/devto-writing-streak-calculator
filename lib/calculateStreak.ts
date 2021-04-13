@@ -44,6 +44,12 @@ export const getBadgeUrl = (streak: number) => {
     }
 }
 
+export const sortArticlesByPublishedDate = (articles: IArticle[]): IArticle[] => (
+    articles.sort((article1, article2) => (
+        dayjs(article1.published_at).isBefore(article2.published_at) ? 1 : -1
+    ))
+)
+
 // Assumption - week starts on the Monday
 // 23rd December week 1 (Tuesday)
 // 30th December week 2 (Tuesday)
@@ -96,9 +102,7 @@ const getWritingStreaks = (articles?: IArticle[]): [IPublishedWeekYear[], IPubli
       return [[], []];
     }
 
-    const sortedArticles = articles.sort((article1, article2) => (
-      dayjs(article1.published_at).isBefore(article2.published_at) ? 1 : -1
-    ))
+    const sortedArticles = sortArticlesByPublishedDate(articles)
 
     const articlePublishedDetails: IPublishedWeekYear[] = sortedArticles.map(({ published_at, id }): IPublishedWeekYear => {
         const d = dayjs(published_at);

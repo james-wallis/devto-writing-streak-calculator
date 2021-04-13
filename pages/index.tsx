@@ -13,6 +13,7 @@ import DisplayStreakMessage from '../components/displayStreakMessage';
 import IUser from '../interfaces/IUser';
 import Header from '../components/header';
 import Footer from '../components/footer';
+import DisplayArticleInfo from '../components/displayArticleInfo';
 
 dayjs.extend(relativeTime)
 dayjs.extend(weekOfYear)
@@ -40,8 +41,13 @@ const IndexPage = () => {
         <h1 className="text-3xl md:text-4xl font-semibold mt-6 md:mt-24 text-center">Dev.to Writing Streak Calculator (unofficial)</h1>
         <span className="text-gray-500 text-sm mt-1 md:mt-2 text-center">All calculations are based on my experience. Read the Dev.to post for more information.</span>
         <div className="container py-6 md:py-24 mx-auto flex flex-wrap items-center justify-between max-w-site">
-          <UsernameForm onSubmit={setUsername} />
-          <DisplayStreakMessage streak={latestStreak} loading={loading} pendingUsernameEntry={username === ''} unknownUser={unknownUser} />
+          <div className="lg:w-1/3 md:w-1/2 w-full bg-white rounded-lg p-6 md:p-8 flex flex-col w-full">
+            <UsernameForm onSubmit={setUsername} />
+          </div>
+          <div className="lg:w-3/5 md:w-1/2 w-full text-center md:text-left mt-6 md:mt-0 md:pl-4">
+            <DisplayStreakMessage streak={latestStreak} loading={loading} pendingUsernameEntry={username === ''} unknownUser={unknownUser} />
+            {articles && <DisplayArticleInfo articles={articles} />}
+          </div>
         </div>
       </div>
       <Footer />

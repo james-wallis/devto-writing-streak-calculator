@@ -13,7 +13,7 @@ const UsernameForm = ({ onSubmit }: IProps) => {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="lg:w-1/3 md:w-1/2 w-full bg-white rounded-lg p-6 md:p-8 flex flex-col w-full">
+        <form onSubmit={handleSubmit} className="w-full flex flex-col">
             <h2 className="text-gray-900 text-lg font-medium title-font mb-3 md:mb-5">Enter your Dev.to username</h2>
             <div className="relative mb-2 md:mb-4" data-children-count="1">
                 <label className="leading-7 text-sm text-gray-600">Username</label>

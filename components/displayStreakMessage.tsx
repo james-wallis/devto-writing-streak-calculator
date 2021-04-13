@@ -21,7 +21,7 @@ const DisplayStreakMessage = ({ streak, loading, pendingUsernameEntry, unknownUs
     }
 
     return (
-        <div className="lg:w-3/5 md:w-1/2 w-full text-center md:text-left mt-6 md:mt-0 md:pl-4">
+        <div>
             <h3 className="title-font font-medium text-3xl text-gray-900">Your current streak</h3>
             <p className="leading-relaxed mt-4">{message}</p>
             {badgeUrl && (

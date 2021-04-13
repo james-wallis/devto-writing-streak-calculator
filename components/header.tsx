@@ -7,7 +7,7 @@ interface IProps {
 }
 
 const Header = ({ user }: IProps): JSX.Element => {
-    const articleUrl = `https://dev.to/jameswallis`
+    const articleUrl = 'https://dev.to/jameswallis/i-made-a-free-dev-to-writing-streak-calculator-that-anyone-can-use-4m07'
     const devToUrl = user ? `https://dev.to/${user.username}` : 'https://dev.to/jameswallis'; // default to me
     const websiteUrl = user ? user.website_url || devToUrl : 'https://wallis.dev';
     return (
