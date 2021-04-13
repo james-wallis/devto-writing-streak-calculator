@@ -4,6 +4,8 @@ import useSWR from 'swr'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import weekOfYear from 'dayjs/plugin/weekOfYear'
 import { useState } from 'react';
+import Head from 'next/head'
+
 import calculateStreak from '../lib/calculateStreak';
 import IArticle from '../interfaces/IArticle';
 import UsernameForm from '../components/usernameForm';
@@ -27,6 +29,10 @@ const IndexPage = () => {
   const loading = (articles === undefined && user === undefined) && username !== '';
   return (
     <div className="w-screen min-h-screen	flex items-center flex-col px-5 bg-body pb-4">
+      <Head>
+        <title>Dev.to Writing Streak Calculator</title>
+        <meta name="description" content="Tool to calculate your current Dev.to Writing Streak. Are you on track for the next badge?" />
+      </Head>
       <Header user={user} />
       <h1 className="text-3xl md:text-4xl font-semibold mt-6 md:mt-24 text-center">Dev.to Writing Streak Calculator (unofficial)</h1>
       <span className="text-gray-500 text-sm mt-1 md:mt-2 text-center">All calculations are based on my experience. Read the Dev.to post for more information.</span>
