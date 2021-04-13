@@ -11,6 +11,9 @@
 
 > Simple Next.js webapp that uses the Dev.to API to calculate a users current streak
 
+![the website](https://user-images.githubusercontent.com/17385115/114582605-a4cf7500-9c78-11eb-8aeb-4c8da56134da.png)
+
+
 ### 🏠 [Homepage](placeholder)
 
 ## Install
