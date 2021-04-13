@@ -57,9 +57,8 @@ const calculateWritingStreaks = (articlePublishedDetails: IPublishedWeekYear[]):
     let currentStreak = [];
 
     const now = dayjs();
-    console.log(now.week() > articlePublishedDetails[0].week);
 
-    if (now.week() - 1 > articlePublishedDetails[0].week) {
+    if (now.week() - 1 > articlePublishedDetails[0].week || now.year() !== articlePublishedDetails[0].year) {
         // If the last post over a week ago, there is no latest streak
         streaks.push([]);
     }
@@ -114,7 +113,6 @@ const getWritingStreaks = (articles?: IArticle[]): [IPublishedWeekYear[], IPubli
         }
     })
 
-    console.log(articlePublishedDetails);
     const [latestStreak, longestStreak] = calculateWritingStreaks(articlePublishedDetails);
 
     return [latestStreak, longestStreak]

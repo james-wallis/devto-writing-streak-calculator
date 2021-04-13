@@ -16,7 +16,7 @@ const DisplayStreakMessage = ({ streak, loading, pendingUsernameEntry, unknownUs
         message = 'Enter your username to get started.'
     } else if (loading) {
         message = 'Loading...'
-    } else if (unknownUser && !loading) {
+    } else if (unknownUser) {
         message = 'The username does not exist'
     }
 

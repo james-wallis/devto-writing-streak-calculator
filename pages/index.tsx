@@ -12,6 +12,7 @@ import UsernameForm from '../components/usernameForm';
 import DisplayStreakMessage from '../components/displayStreakMessage';
 import IUser from '../interfaces/IUser';
 import Header from '../components/header';
+import Footer from '../components/footer';
 
 dayjs.extend(relativeTime)
 dayjs.extend(weekOfYear)
@@ -28,18 +29,21 @@ const IndexPage = () => {
 
   const loading = (articles === undefined && user === undefined) && username !== '';
   return (
-    <div className="w-screen min-h-screen	flex items-center flex-col px-5 bg-body pb-4">
+    <div className="w-screen min-h-screen	flex items-center flex-col px-5 bg-body">
       <Head>
         <title>Dev.to Writing Streak Calculator</title>
         <meta name="description" content="Tool to calculate your current Dev.to Writing Streak. Are you on track for the next badge?" />
       </Head>
       <Header user={user} />
-      <h1 className="text-3xl md:text-4xl font-semibold mt-6 md:mt-24 text-center">Dev.to Writing Streak Calculator (unofficial)</h1>
-      <span className="text-gray-500 text-sm mt-1 md:mt-2 text-center">All calculations are based on my experience. Read the Dev.to post for more information.</span>
-      <div className="container py-6 md:py-24 mx-auto flex flex-wrap items-center justify-between max-w-site">
-        <UsernameForm onSubmit={setUsername} />
-        <DisplayStreakMessage streak={latestStreak} loading={loading} pendingUsernameEntry={username === ''} unknownUser={!user} />
+      <div className="flex flex-grow flex-col w-full">
+        <h1 className="text-3xl md:text-4xl font-semibold mt-6 md:mt-24 text-center">Dev.to Writing Streak Calculator (unofficial)</h1>
+        <span className="text-gray-500 text-sm mt-1 md:mt-2 text-center">All calculations are based on my experience. Read the Dev.to post for more information.</span>
+        <div className="container py-6 md:py-24 mx-auto flex flex-wrap items-center justify-between max-w-site">
+          <UsernameForm onSubmit={setUsername} />
+          <DisplayStreakMessage streak={latestStreak} loading={loading} pendingUsernameEntry={username === ''} unknownUser={!articles && !user} />
+        </div>
       </div>
+      <Footer />
     </div>
   )
 }
