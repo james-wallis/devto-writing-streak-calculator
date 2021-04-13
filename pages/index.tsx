@@ -23,13 +23,12 @@ const fetcher = (url: string) => axios.get(url).then(res => res.data)
 const IndexPage = () => {
   const [username, setUsername] = useState('');
 
-  const { data: user } = useSWR<IUser, Error>(username ? `https://dev.to/api/users/by_username?url=${username}` : null, fetcher)
+  const { data: user, error: userError } = useSWR<IUser, Error>(username ? `https://dev.to/api/users/by_username?url=${username}` : null, fetcher)
   const { data: articles } = useSWR<IArticle[], Error>(username ? `https://dev.to/api/articles?username=${username}&per_page=1000` : null, fetcher)
   const [latestStreak] = calculateStreak(articles)
 
-
-  const loading = (articles === undefined && user === undefined) && username !== '';
-  const unknownUser = (!articles || articles.length === 0) && !user
+  const loading = (articles === undefined || user === undefined) && username !== '' && !userError;
+  const unknownUser = ((!articles || articles.length === 0) && !user) || userError?.message === 'Request failed with status code 404'
   return (
     <div className="w-screen min-h-screen	flex items-center flex-col px-5 bg-body">
       <Head>
