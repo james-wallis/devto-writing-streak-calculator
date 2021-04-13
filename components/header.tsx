@@ -20,7 +20,10 @@ const Header = ({ user }: IProps): JSX.Element => {
                             alt="dev.to logo"
                             className="mr-4 h-full w-auto"
                         />
-                        <h1 className="text-lg">Streak Calculator</h1>
+                        <h1 className="text-lg">
+                            <span className="hidden md:inline mr-1">Writing</span>
+                            Streak Calculator
+                        </h1>
                     </a>
                 </Link>
                 <div className="flex items-center">
