@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import IArticle from '../interfaces/IArticle';
 import en from 'dayjs/locale/en';
+import IPublishedWeekYear from '../interfaces/IPublishedWeekYear';
 dayjs.locale({
     ...en,
     weekStart: 1,
@@ -16,17 +17,31 @@ const LONGEST_STREAK_TEMPLATE = "weeks! You've achieved the longest writing \
   streak possible (16 weeks). This makes you eligible for special quests in the future. \
   Keep up the amazing contributions to our community!";
 
-const createMessage = (streak: number) => {
+export const createStreakMessage = (streak: number) => {
     if (streak >= LONGEST_STREAK_WEEKS) {
         return `${streak} ${LONGEST_STREAK_TEMPLATE}`;
     }
     let nextBadge = 4;
-    if (streak >= 4 && streak < 8) {
+    if (streak === 0) {
+        return "Post on Dev.to to start your writing streak! (Currently 0)"
+    } else if (streak >= 4 && streak < 8) {
         nextBadge = 8;
     } else if (streak >= 8) {
         nextBadge = 16;
     }
     return `Congrats on achieving a ${streak} week streak! Consistent writing is hard. The next streak badge you can get is the ${nextBadge} Week Badge. 😉`
+}
+
+export const getBadgeUrl = (streak: number) => {
+    if (streak >= 16) {
+        return 'https://dev.to/badge/16-week-streak'
+    } else if (streak >= 8) {
+        return 'https://dev.to/badge/8-week-streak'
+    } else if (streak >= 4) {
+        return 'https://dev.to/badge/4-week-streak'
+    } else {
+        return ''
+    }
 }
 
 // Assumption - week starts on the Monday
@@ -37,57 +52,72 @@ const createMessage = (streak: number) => {
 // Streak 16 weeks - 12th April 2021 (A Monday)
 // Streak 4 weeks - 17th August 2020 (A Monday)
 
+const calculateWritingStreaks = (articlePublishedDetails: IPublishedWeekYear[]): [IPublishedWeekYear[], IPublishedWeekYear[]] => {
+    let streaks = [];
+    let currentStreak = [];
 
-const calculateStreak = (articles?: IArticle[]): [number, string] => {
-    if (!articles || articles.length < 0) {
-      return [0, ''];
+    const now = dayjs();
+    console.log(now.week() > articlePublishedDetails[0].week);
+
+    if (now.week() - 1 > articlePublishedDetails[0].week) {
+        // If the last post over a week ago, there is no latest streak
+        streaks.push([]);
+    }
+
+    currentStreak.push(articlePublishedDetails[0])
+
+    for (let i = 1; i < articlePublishedDetails.length; i++) {
+        const previousEntryWeek = articlePublishedDetails[i-1].week;
+        const week = articlePublishedDetails[i].week;
+        const yearsAreSame = articlePublishedDetails[i].year === articlePublishedDetails[i-1].year;
+
+        if (previousEntryWeek === week && yearsAreSame) {
+            continue;
+        } else if ((previousEntryWeek - week === 1 && yearsAreSame) || week === 52 && previousEntryWeek === 1) {
+            currentStreak.push(articlePublishedDetails[i])
+        } else {
+            streaks.push(currentStreak)
+            currentStreak = [articlePublishedDetails[i]];
+        }
+    }
+
+    // Add final streak into streaks array
+    streaks.push(currentStreak);
+
+    const latestStreak = streaks[0];
+
+    const streaksSortedByLongest = streaks.sort((a, b) => a > b ? -1 : 1);
+    const longestStreak = streaksSortedByLongest[0];
+
+    return [latestStreak, longestStreak];
+}
+
+const getWritingStreaks = (articles?: IArticle[]): [IPublishedWeekYear[], IPublishedWeekYear[]] => {
+    if (!articles || articles.length <= 0) {
+      return [[], []];
     }
 
     const sortedArticles = articles.sort((article1, article2) => (
       dayjs(article1.published_at).isBefore(article2.published_at) ? 1 : -1
     ))
 
-    const articleWeeks = [... new Set(sortedArticles.map(({ published_at }) => (dayjs(published_at).week())))]
-    let count = 1;
-
-    for (let i = 1; i < articleWeeks.length; i++) {
-        if (articleWeeks[i-1] - articleWeeks[i] === 1 || articleWeeks[i] === 52 && articleWeeks[i-1] === 1) {
-            count++;
-        } else {
-            break
+    const articlePublishedDetails: IPublishedWeekYear[] = sortedArticles.map(({ published_at, id }): IPublishedWeekYear => {
+        const d = dayjs(published_at);
+        const week = d.week();
+        // December 30th can be in week 1 of next year
+        const year = week === 1 && d.month() === 11 ? d.year() + 1 : d.year();
+        return {
+            week,
+            year,
+            published_at,
+            id,
         }
-    }
-    return [count, createMessage(count)]
+    })
 
-    // sortedArticles.forEach((article, i) => {
-    //   const oneWeekBeforeArticlePublishDate = dayjs(article.published_at).subtract(1, 'week');
-    //   if (i < articles.length -1 && oneWeekBeforeArticlePublishDate.isBefore(articles[i+1].published_at)) {
-    //     count++;
-    //   } else {
-    //       return
-    //   }
-    // })
+    console.log(articlePublishedDetails);
+    const [latestStreak, longestStreak] = calculateWritingStreaks(articlePublishedDetails);
 
-    // for (let i = 0; i < articles.length; i++) {
-    //     const article = articles[i];
-    //     const oneWeekBeforeArticlePublishDate = dayjs(article.published_at).subtract(1, 'week').subtract(1, 'day').hour(0).minute(0);
-    //     console.log(article.published_at, oneWeekBeforeArticlePublishDate.toISOString(), articles[i+1].published_at);
-    //     console.log(oneWeekBeforeArticlePublishDate.isBefore(articles[i+1].published_at));
-    //     if (i < articles.length -1 && oneWeekBeforeArticlePublishDate.isBefore(articles[i+1].published_at)) {
-    //         count++;
-    //     } else {
-    //         break
-    //     }
-    // }
-
-    // if (count > sortedArticles.length || !sortedArticles[count] || !sortedArticles[count].published_at) {
-    //   return [0, ''];
-    // }
-
-    // console.log(sortedArticles, count, sortedArticles[count].published_at);
-    // console.log(Math.round(dayjs().diff(sortedArticles[count].published_at, 'week', true)))
-    // const streak = Math.round(dayjs().diff(sortedArticles[count].published_at, 'week', true));
-    // return [streak, createMessage(streak)]
+    return [latestStreak, longestStreak]
   }
 
-export default calculateStreak;
+export default getWritingStreaks;

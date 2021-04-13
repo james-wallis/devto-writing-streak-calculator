@@ -1,11 +1,15 @@
 import axios from 'axios';
 import dayjs from 'dayjs';
 import useSWR from 'swr'
-import IArticle from '../interfaces/IArticle';
 import relativeTime from 'dayjs/plugin/relativeTime'
 import weekOfYear from 'dayjs/plugin/weekOfYear'
 import { useState } from 'react';
 import calculateStreak from '../lib/calculateStreak';
+import IArticle from '../interfaces/IArticle';
+import UsernameForm from '../components/usernameForm';
+import DisplayStreakMessage from '../components/displayStreakMessage';
+import IUser from '../interfaces/IUser';
+import Header from '../components/header';
 
 dayjs.extend(relativeTime)
 dayjs.extend(weekOfYear)
@@ -14,36 +18,21 @@ const fetcher = (url: string) => axios.get(url).then(res => res.data)
 
 const IndexPage = () => {
   const [username, setUsername] = useState('');
-  const [formUsername, setFormUsername] = useState('');
+
+  const { data: user } = useSWR<IUser, Error>(username ? `https://dev.to/api/users/by_username?url=${username}` : null, fetcher)
+  const { data: articles } = useSWR<IArticle[], Error>(username ? `https://dev.to/api/articles?username=${username}&per_page=1000` : null, fetcher)
+  const [latestStreak] = calculateStreak(articles)
 
 
-  const { data } = useSWR<IArticle[], Error>(username ? `https://dev.to/api/articles?username=${username}&per_page=1000` : null, fetcher)
-  const [, message] = calculateStreak(data)
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setUsername(formUsername)
-  }
-
+  const loading = (articles === undefined && user === undefined) && username !== '';
   return (
-    <div>
-      <h1>Dev.to Streak Calculator (unofficial)</h1>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Name:
-          <input type="text" value={formUsername} onChange={(e) => setFormUsername(e.target.value)} />
-        </label>
-        <input type="submit" value="Submit" />
-      </form>
-      {username && data ? (
-        <div>
-          <p>{message}</p>
-        </div>
-      ) : (
-        <div>
-          <p>Enter your username to see your current streak</p>
-        </div>
-      )}
+    <div className="w-screen min-h-screen	flex items-center flex-col px-5 bg-body pb-4">
+      <Header user={user} />
+      <h1 className="text-3xl md:text-4xl font-semibold mt-6 md:mt-24 text-center">Dev.to Writing Streak Calculator (unofficial)</h1>
+      <div className="container py-6 md:py-24 mx-auto flex flex-wrap items-center justify-between max-w-site">
+        <UsernameForm onSubmit={setUsername} />
+        <DisplayStreakMessage streak={latestStreak} loading={loading} pendingUsernameEntry={username === ''} unknownUser={!user} />
+      </div>
     </div>
   )
 }
