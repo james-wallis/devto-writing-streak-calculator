@@ -17,6 +17,8 @@ export default async (req: NextApiRequest, res: NextApiResponse): Promise<void> 
     const { data: articles } = await axios.get(`https://dev.to/api/articles?username=${username}&per_page=1000`)
     const [latestStreak, longestStreak] = getWritingStreaks(articles)
     res.status(200).json({
+        latestStreakCount: latestStreak.length,
+        longestStreakCount: longestStreak.length,
         latestStreak,
         longestStreak,
     })
