@@ -1,7 +1,13 @@
 import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime'
+import weekOfYear from 'dayjs/plugin/weekOfYear'
 import IArticle from '../interfaces/IArticle';
 import en from 'dayjs/locale/en';
 import IPublishedWeekYear from '../interfaces/IPublishedWeekYear';
+
+dayjs.extend(relativeTime)
+dayjs.extend(weekOfYear)
+
 dayjs.locale({
     ...en,
     weekStart: 1,

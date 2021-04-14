@@ -1,8 +1,5 @@
 import axios from 'axios';
-import dayjs from 'dayjs';
 import useSWR from 'swr'
-import relativeTime from 'dayjs/plugin/relativeTime'
-import weekOfYear from 'dayjs/plugin/weekOfYear'
 import { useState } from 'react';
 import Head from 'next/head'
 
@@ -14,9 +11,6 @@ import IUser from '../interfaces/IUser';
 import Header from '../components/header';
 import Footer from '../components/footer';
 import DisplayArticleInfo from '../components/displayArticleInfo';
-
-dayjs.extend(relativeTime)
-dayjs.extend(weekOfYear)
 
 const fetcher = (url: string) => axios.get(url).then(res => res.data)
 
