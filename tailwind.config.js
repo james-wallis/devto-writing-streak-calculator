@@ -29,6 +29,9 @@ module.exports = {
             borderRadius: {
                 devto: '5px',
             },
+            boxShadow: {
+                header: '0 1px 1px rgba(0, 0, 0, 0.1)',
+            },
         },
     },
     variants: {

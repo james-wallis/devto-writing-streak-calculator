@@ -11,7 +11,7 @@ const Header = ({ user }: IProps): JSX.Element => {
     const devToUrl = user ? `https://dev.to/${user.username}` : 'https://dev.to/jameswallis'; // default to me
     const websiteUrl = user ? user.website_url || devToUrl : 'https://wallis.dev';
     return (
-        <header className="w-screen bg-white h-header shadow-sm">
+        <header className="w-screen bg-white h-header shadow-header">
             <div className="max-w-site m-auto px-2 lg:px-4 h-full flex flex-row items-center justify-between">
                 <Link href="/">
                     <a className="flex items-center">
